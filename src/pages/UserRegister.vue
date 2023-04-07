@@ -36,7 +36,7 @@
         </el-alert>
       </div>
       <div class="tips">
-        <router-link :to="{ name: 'denglu' }"
+        <router-link replace :to="{ name: 'denglu' }"
           >已经有账号了？点击登录</router-link
         >
       </div>

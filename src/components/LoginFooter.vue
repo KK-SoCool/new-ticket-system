@@ -3,7 +3,9 @@
     <div class="tips">
       <input type="checkbox" />
       <span>记住密码</span>
-      <router-link :to="{ name: 'zhuce' }">还没有账号？点击注册</router-link>
+      <router-link replace :to="{ name: 'zhuce' }"
+        >还没有账号？点击注册</router-link
+      >
     </div>
     <div class="submit">
       <input
