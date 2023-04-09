@@ -5,43 +5,50 @@
         <el-breadcrumb-item :to="{ path: '/managerMainInterface' }"
           >火车售票系统</el-breadcrumb-item
         >
-        <el-breadcrumb-item>退票信息</el-breadcrumb-item>
+        <el-breadcrumb-item>用户信息</el-breadcrumb-item>
       </el-breadcrumb>
       <el-divider></el-divider>
     </div>
     <div class="showUnTicketInfo">
       <div class="container">
         <el-table
-          :data="UnTicket"
+          :data="UserMsg"
           height="450"
           border
           style="width: 100%"
           stripe
         >
           <el-table-column
-            prop="ticketID"
-            label="车票ID"
-            width="180"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
             prop="userID"
-            label="退票用户"
+            label="用户ID"
+            width="100"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="userAccount"
+            label="用户名"
             width="180"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="refundedPrice"
-            label="退票金额"
+            prop="userPassword"
+            label="用户密码"
             width="180"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="refundedTime"
-            label="退票时间"
+            prop="userName"
+            label="用户姓名"
+            width="180"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="userAuthority"
+            label="用户权限"
             width="100"
             align="center"
           >
@@ -49,43 +56,44 @@
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text"
-                >查看</el-button
+                >修改</el-button
               >
-              <el-button type="text" @click="refund">退票</el-button>
+              <el-button type="text" @click="refund">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="pagination"
-        small
-        layout="prev, pager, next"
-        :total="30">
-      </el-pagination>
     </div>
-    <UnTicketComponent
+    <UserMessageComponent
         v-if="showDialog"
-        ref="unTicketComponent"
+        ref="userMessageComponent"
         :dialog-title="dialogTitle"
         :item-info="stationItem"
         @closeDialog="closeDialog"
-    ></UnTicketComponent>
+    ></UserMessageComponent>
+    <el-pagination class="pagination"
+        small
+        layout="prev, pager, next"
+        :total="30">
+    </el-pagination>
   </div>
 </template>
 
 <script>
-import UnTicketComponent from '../ManagerComponents/UnTicketComponent'
+import UserMessageComponent from '../ManagerComponents/UserMessageComponent.vue'
 export default {
-  name: 'UnTicketInfo',
-  components:{UnTicketComponent},
+  name: 'UserMessage',
+  components:{UserMessageComponent},
   data() {
     return {
       showDialog: false,
-      UnTicket: [
+      UserMsg: [
         {
-          ticketID: '12345',
-          userID: '666',
-          refundedPrice: '65',
-          refundedTime: '12:32'
+            userID:'666',
+            userAccount:'haha',
+            userPassword:'123456',
+            userName:'欧阳',
+            userAuthority:'用户'
         }
       ]
     }
@@ -93,10 +101,10 @@ export default {
   methods: {
     handleClick(row){
       this.stationItem = row
-      this.dialogTitle = "查看车票"
+      this.dialogTitle = "用户信息"
       this.showDialog = true
       this.$nextTick(() => {
-      this.$refs["unTicketComponent"].showDialog = true
+      this.$refs["userMessageComponent"].showDialog = true
       });
       },
 
@@ -109,14 +117,14 @@ export default {
       },
 
     refund() {
-      this.$confirm('请确定是否同意该用户的退票', '注意', {
+      this.$confirm('此操作不可撤销，请问是否要删除该用户', '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       })
         .then(() => {
           this.$message({
             type: 'success',
-            message: '退票成功!'
+            message: '删除成功!'
           })
         })
         .catch(() => {

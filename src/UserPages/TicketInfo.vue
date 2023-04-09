@@ -71,7 +71,9 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template>
-              <el-button type="text">退票</el-button>
+              <el-button type="text" @click="isRefund" :disabled="disabled"
+                >退票</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -83,6 +85,7 @@
 <script>
 export default {
   name: 'TicketInfo',
+
   data() {
     return {
       userTicketTable: [
@@ -96,7 +99,30 @@ export default {
           seatType: '一等座',
           seatNum: '0812A'
         }
-      ]
+      ],
+      disabled: false
+    }
+  },
+  methods: {
+    isRefund() {
+      this.$confirm('此操作将提交退票申请, 是否继续?', '注意', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.disabled = true
+          this.$message({
+            type: 'success',
+            message: '已提交退票申请!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退票'
+          })
+        })
     }
   }
 }

@@ -23,9 +23,9 @@ export default {
   methods: {
     JudgePermission() {
       if (this.userAccount == 1 && this.userPassword == 1) {
-        this.$router.push('/managerMainInterface')
+        this.$router.replace('/managerMainInterface')
       } else if (this.userAccount == 2 && this.userPassword == 2) {
-        this.$router.push('userMainInterface')
+        this.$router.replace('/userMainInterface')
       }
     }
   },

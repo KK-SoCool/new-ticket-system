@@ -1,5 +1,10 @@
 <template>
   <div class="showTicketData">
+    <BuyTicket
+      :title="dialogTitle"
+      :width="dialogWidth"
+      :height="dialogHeight"
+    />
     <div class="container">
       <el-table
         :data="ticketTable"
@@ -57,29 +62,16 @@
 </template>
 
 <script>
+import BuyTicket from './BuyTicket.vue'
 export default {
   name: 'ShowTicketData',
+  components: { BuyTicket },
   methods: {
     handleClick(row) {
       console.log(row)
     },
     buy() {
-      this.$confirm('请确定是否购票', '购票', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '购票成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消购票'
-          })
-        })
+      this.$bus.$emit('Show')
     }
   },
   data() {
@@ -155,7 +147,10 @@ export default {
           firstSeat: '有',
           secondSeat: '有'
         }
-      ]
+      ],
+      dialogTitle: '请选择乘车人信息',
+      dialogWidth: '35%',
+      dialogHeight: '1000px'
     }
   }
 }
