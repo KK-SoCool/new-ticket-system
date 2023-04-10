@@ -27,7 +27,7 @@
           :size="size"
           border
           v-for="p in passengerInfo"
-          :key="p.passengerCradNum"
+          :key="p.passengerCardNum"
         >
           <el-descriptions-item>
             <template slot="label">
@@ -48,7 +48,13 @@
               <i class="el-icon-postcard"></i>
               证件号
             </template>
-            {{ p.passengerCradNum }}
+            {{ p.passengerCardNum }}
+            <el-button
+              type="danger"
+              plain
+              @click="deletePassenger(p.passengerCardNum)"
+              >删除</el-button
+            >
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -72,12 +78,12 @@ export default {
         {
           passengerName: '爱铿',
           passengerCardType: '身份证',
-          passengerCradNum: '441283200204294970'
+          passengerCardNum: '441283200204294970'
         },
         {
           passengerName: 'ikun',
           passengerCardType: '粉丝证',
-          passengerCradNum: '1234567891011121314'
+          passengerCardNum: '1234567891011121314'
         }
       ]
     }
@@ -88,6 +94,31 @@ export default {
     },
     add(passengerObj) {
       this.passengerInfo.push(passengerObj)
+      console.log(this.passengerInfo)
+    },
+    deletePassenger(passengerCardNum) {
+      //弹框确认是否删除
+      this.$confirm('此操作将删除该乘车人信息, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          //删除操作
+          this.passengerInfo = this.passengerInfo.filter((p) => {
+            return p.passengerCardNum != passengerCardNum
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }

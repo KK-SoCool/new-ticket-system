@@ -27,10 +27,14 @@ export default {
       } else if (this.userAccount == 2 && this.userPassword == 2) {
         this.$router.replace('/userMainInterface')
       }
+    },
+    sendUsername() {
+      this.$store.commit('CHANGENAME', this.userAccount)
     }
   },
   mounted() {
     this.$bus.$on('Login', this.JudgePermission)
+    this.$bus.$on('SendUserName', this.sendUsername)
   }
 }
 </script>

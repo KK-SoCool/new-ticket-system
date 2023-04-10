@@ -8,6 +8,8 @@ import VueRouter from 'vue-router'
 
 import router from './router'
 
+import store from './store/index.js'
+
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.config.productionTip = false
@@ -18,6 +20,7 @@ new Vue({
   el: '#app',
   render: h => h(App),
   router: router,
+  store,
   beforeCreate() {
     Vue.prototype.$bus = this
   }

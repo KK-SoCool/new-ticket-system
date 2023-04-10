@@ -34,6 +34,7 @@ import UserMessage from '../ManagerPages/UserMessage'
 
 import PersonalCenter from '../ManagerPages/PersonalCenter'
 
+
 export default new VueRouter({
     routes: [
         {
@@ -79,7 +80,7 @@ export default new VueRouter({
                     component: UserFirstPage
                 },
                 {
-                    name: '用户个人中心',
+                    name: '个人中心',
                     path: 'personalInfo',
                     component: PersonalInfo
                 },
@@ -110,9 +111,9 @@ export default new VueRouter({
                     component: ManagerFirstPage
                 },
                 {
-                    name: '车票信息',
-                    path: 'ticketMessage',
-                    component: TicketMessage
+                    name:'车票信息',
+                    path:'ticketMessage',
+                    component:TicketMessage
                 },
                 {
                     name: '退票信息',
@@ -120,24 +121,29 @@ export default new VueRouter({
                     component: UnTicketInfo
                 },
                 {
-                    name: '车站信息',
-                    path: 'stationManagement',
-                    component: StationManagement
+                    name:'车站信息',
+                    path:'stationManagement',
+                    component:StationManagement
                 },
                 {
-                    name: '车次管理',
-                    path: 'trainmanagement',
-                    component: TrainManagement
+                    name:'车次管理',
+                    path:'trainmanagement',
+                    component:TrainManagement
                 },
                 {
-                    name: '用户信息',
-                    path: 'usermessage',
-                    component: UserMessage
+                    name:'列车座位管理',
+                    path:'seatTypeManagement',
+                    component: () => import('../ManagerPages/SeatTypeManagement.vue')
                 },
                 {
-                    name: '个人中心',
-                    path: 'personalcenter',
-                    component: PersonalCenter
+                    name:'用户信息',
+                    path:'usermessage',
+                    component:UserMessage
+                },
+                {
+                    name:'个人中心',
+                    path:'personalcenter',
+                    component:PersonalCenter
                 },
             ]
         }

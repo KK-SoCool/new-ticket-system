@@ -16,10 +16,10 @@
         <el-form-item
           label="姓名"
           :label-width="formLabelWidth"
-          prop="paseengerName"
+          prop="passengerName"
         >
           <el-input
-            v-model="formData.paseengerName"
+            v-model="formData.passengerName"
             placeholder="请输入真实姓名"
           ></el-input>
         </el-form-item>
@@ -74,12 +74,12 @@ export default {
   data() {
     return {
       formData: {
-        paseengerName: '',
+        passengerName: '',
         passengerCardType: '',
         passengerCardNum: ''
       },
       rules: {
-        paseengerName: [
+        passengerName: [
           {
             required: true,
             message: '请填写真实姓名',
@@ -109,6 +109,9 @@ export default {
     submit() {
       this.isShow = false
       this.add(this.formData)
+      this.passengerName = ''
+      this.passengerCardType = ''
+      this.passengerCardNum = ''
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()

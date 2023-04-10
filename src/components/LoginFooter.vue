@@ -24,6 +24,15 @@ export default {
   methods: {
     goUserMainInterface() {
       this.$bus.$emit('Login')
+      this.$bus.$emit('SendUserName')
+      this.$store.commit('JUDGETIME', this.nowHours)
+    }
+  },
+  computed: {
+    nowHours() {
+      var date = new Date()
+      var h = date.getHours()
+      return h
     }
   }
 }

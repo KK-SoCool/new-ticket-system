@@ -1,7 +1,10 @@
 <template>
   <div class="header">
     <h2>215-12306</h2>
-    <h2 class="hello">早上好！Manager。欢迎使用火车售票系统！</h2>
+    <h2 class="hello">
+      {{ $store.state.hello
+      }}{{ $store.state.userName }}。欢迎使用火车售票系统！
+    </h2>
     <el-avatar :size="50" :src="circleUrl" class="block"></el-avatar>
     <div class="goOut" @click="exit">退出登录</div>
   </div>

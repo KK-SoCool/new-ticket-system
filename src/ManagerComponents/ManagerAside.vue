@@ -7,31 +7,59 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-      <el-menu-item index="/managerMainInterface/managerFirstPage" @click="goManagerFirstPage" >
+      <el-menu-item
+        index="/managerMainInterface/managerFirstPage"
+        @click="goManagerFirstPage"
+      >
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
       </el-menu-item>
-      <el-menu-item index="/managerMainInterface/ticketMessage" @click="goTicketMessage">
+      <el-menu-item
+        index="/managerMainInterface/ticketMessage"
+        @click="goTicketMessage"
+      >
         <i class="el-icon-shopping-cart-2"></i>
         <span slot="title">车票信息</span>
       </el-menu-item>
-      <el-menu-item index="/managerMainInterface/unTicketInfo" @click="goUnTicketInfo">
+      <el-menu-item
+        index="/managerMainInterface/unTicketInfo"
+        @click="goUnTicketInfo"
+      >
         <i class="el-icon-s-ticket"></i>
         <span slot="title">退票订单</span>
       </el-menu-item>
-      <el-menu-item index="/managerMainInterface/stationManagement" @click="goStationManagement">
+      <el-menu-item
+        index="/managerMainInterface/stationManagement"
+        @click="goStationManagement"
+      >
         <i class="el-icon-location-information"></i>
         <span slot="title">车站管理</span>
       </el-menu-item>
-      <el-menu-item index="/managerMainInterface/trainmanagement" @click="goTrainManagement">
+      <el-menu-item
+        index="/managerMainInterface/trainmanagement"
+        @click="goTrainManagement"
+      >
         <i class="el-icon-truck"></i>
         <span slot="title">列车管理</span>
       </el-menu-item>
-      <el-menu-item index="/managerMainInterface/usermessage" @click="goUserMessage">
+      <el-menu-item
+        index="/managerMainInterface/seatTypeManagement"
+        @click="goSeatTypeManagement"
+      >
+        <i class="el-icon-user"></i>
+        <span slot="title">座位管理</span>
+      </el-menu-item>
+      <el-menu-item
+        index="/managerMainInterface/usermessage"
+        @click="goUserMessage"
+      >
         <i class="el-icon-s-custom"></i>
         <span slot="title">用户信息管理</span>
       </el-menu-item>
-      <el-menu-item index="/managerMainInterface/personalcenter" @click="goPersonalCenter">
+      <el-menu-item
+        index="/managerMainInterface/personalcenter"
+        @click="goPersonalCenter"
+      >
         <i class="el-icon-user"></i>
         <span slot="title">个人中心</span>
       </el-menu-item>
@@ -44,35 +72,50 @@ export default {
   name: 'ManagerAside',
   data() {
     return {
-      activerouter: '',
-      }
-   },
+      activerouter: ''
+    }
+  },
   methods: {
     goManagerFirstPage() {
-      this.$router.push('/managerMainInterface/managerFirstPage')
+      this.$router
+        .push('/managerMainInterface/managerFirstPage')
+        .catch((err) => {})
     },
     goUnTicketInfo() {
-      this.$router.push('/managerMainInterface/unTicketInfo')
+      this.$router.push('/managerMainInterface/unTicketInfo').catch((err) => {})
     },
-    goTicketMessage(){
-      this.$router.push('/managerMainInterface/ticketMessage')
+    goTicketMessage() {
+      this.$router
+        .push('/managerMainInterface/ticketMessage')
+        .catch((err) => {})
     },
-    goStationManagement(){
-      this.$router.push('/managerMainInterface/stationManagement')
+    goStationManagement() {
+      this.$router
+        .push('/managerMainInterface/stationManagement')
+        .catch((err) => {})
     },
-    goTrainManagement(){
-      this.$router.push('/managerMainInterface/trainmanagement')
+    goTrainManagement() {
+      this.$router
+        .push('/managerMainInterface/trainmanagement')
+        .catch((err) => {})
     },
-    goUserMessage(){
-      this.$router.push('/managerMainInterface/usermessage')
+    goUserMessage() {
+      this.$router.push('/managerMainInterface/usermessage').catch((err) => {})
     },
-    goPersonalCenter(){
-      this.$router.push('/managerMainInterface/personalcenter')
+    goSeatTypeManagement() {
+      this.$router
+        .push('/managerMainInterface/seatTypeManagement')
+        .catch((err) => {})
+    },
+    goPersonalCenter() {
+      this.$router
+        .push('/managerMainInterface/personalcenter')
+        .catch((err) => {})
     }
   },
   mounted() {
-        this.activerouter = this.$route.path
-    },
+    this.activerouter = this.$route.path
+  }
 }
 </script>
 
