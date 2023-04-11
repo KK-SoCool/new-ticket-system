@@ -3,7 +3,7 @@
     <div class="wrap">
       <ManagerHeader />
       <MangerAside />
-      <router-view></router-view>
+      <router-view v-if="isRouterAlive"></router-view>
     </div>
   </div>
 </template>
@@ -16,6 +16,24 @@ export default {
   components: {
     ManagerHeader,
     MangerAside
+  },
+  provide(){
+    return{
+      reload:this.reload
+    }
+  },
+  data(){
+    return{
+      isRouterAlive:true
+    }
+  },
+  methods:{
+    reload(){
+      this.isRouterAlive = false;
+      this.$nextTick(function(){
+        this.isRouterAlive = true;
+      })
+    }
   }
 }
 </script>

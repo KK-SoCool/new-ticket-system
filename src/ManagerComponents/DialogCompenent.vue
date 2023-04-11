@@ -58,23 +58,39 @@
                 </el-form-item>
             </el-col>
         </el-row>
-        <el-form-item label="车箱数" prop="trainSum" required>
-          <el-input v-model="formInfo.trainSum" size="mini"></el-input>
-        </el-form-item>
         <el-row>
-            <el-col :span='8'>
+            <el-col :span='12'>
                 <el-form-item label="一等座" prop="firstSeatType" required>
                     <el-input v-model="formInfo.firstSeatType" size="mini"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span='8'>
-                <el-form-item label="二等座" prop="secondSeatType" required>
-                    <el-input v-model="formInfo.secondSeatType" size="mini"></el-input>
+            <el-col :span='12'>
+                <el-form-item label="售价" prop="firstSeatSell" required>
+                    <el-input v-model="formInfo.firstSeatSell" size="mini"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span='8'>
+        </el-row>
+        <el-row>
+            <el-col :span='12'>
+                <el-form-item label="二等座" prop="secondSeatType" required>
+                    <el-input v-model="formInfo.firstSeatType" size="mini"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span='12'>
+                <el-form-item label="售价" prop="secondSeatSell" required>
+                    <el-input v-model="formInfo.firstSeatSell" size="mini"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span='12'>
                 <el-form-item label="无座" prop="noSeatType" required>
-                    <el-input v-model="formInfo.noSeatType" size="mini"></el-input>
+                    <el-input v-model="formInfo.firstSeatType" size="mini"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span='12'>
+                <el-form-item label="售价" prop="noSeatSell" required>
+                    <el-input v-model="formInfo.firstSeatSell" size="mini"></el-input>
                 </el-form-item>
             </el-col>
         </el-row>

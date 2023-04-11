@@ -28,33 +28,27 @@
           height="450"
           border
           style="width: 100%"
+          ref="table"
           stripe
         >
           <el-table-column
-            prop="stationID"
-            label="车站ID"
-            width="180"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="stationProvince"
+            prop="province"
             label="车站省份"
-            width="180"
+            width="240"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="stationCity"
+            prop="city"
             label="车站城市"
-            width="180"
+            width="240"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="stationName"
+            prop="name"
             label="车站站名"
-            width="180"
+            width="240"
             align="center"
           >
           </el-table-column>
@@ -81,17 +75,19 @@
         ref="stationComponent"
         :dialog-title="dialogTitle"
         :item-info="stationItem"
-         @closeDialog="closeDialog"
+        @closeDialog="closeDialog"
     ></StationComponent>
     <el-pagination class="pagination"
         small
         layout="prev, pager, next"
+        :page-size="5"
         :total="30">
     </el-pagination>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import StationComponent from '../ManagerComponents/StationComponent.vue'
 export default {
   name: 'StationManagement',
@@ -101,40 +97,34 @@ export default {
       input:'',
       showDialog: false,
       dialogTitle: "添加车站",
-        stationMsg:[],
-        stationItem:{
-          stationID:'',
-          stationProvince:'',
-          stationCity:'',
-          stationName:''
-        }
+      stationMsg:[],
+      stationItem:{
+        stationId:'',
+        stationProvince:'',
+        stationCity:'',
+        stationName:''
+      }
     }
   },
    mounted(){
-    this.fetchData()
+    this.getStationList() 
   },
+  
   methods: {
-     fetchData(){
-      const that = this;
-      // that.tableLoading = true;
-      that.stationMsg = [
-        {
-            stationID:'001',
-            stationProvince:'北京',
-            stationCity:'北京',
-            stationName:'北京站'
-        },
-        {
-            stationID:'002',
-            stationProvince:'广东',
-            stationCity:'广州',
-            stationName:'广州南站'
-        },
-      ]
+     getStationList(){
+      axios.post('/api/station/user/getAll',{
+            isAll : '1'
+      })
+        .then((res) => {
+          this.stationMsg = res.data.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      
      },
     addItem(){
       this.stationItem = {
-          stationID:'',
           stationProvince:'',
           stationCity:'',
           stationName:''
@@ -142,7 +132,7 @@ export default {
       this.dialogTitle = "添加车站"
       this.showDialog = true
       this.$nextTick(() => {
-        this.$refs["stationComponent"].showDialog = true
+      this.$refs["stationComponent"].showDialog = true
       });
     },
     handleClick(row){
@@ -161,7 +151,6 @@ export default {
           }
           this.showDialog = false;
         },
-
       refund() {
       this.$confirm('此操作不可撤销，请问是否要删除车站', '注意', {
         confirmButtonText: '确定',
@@ -181,6 +170,11 @@ export default {
         })
     }
   },
+
+  beforeDestroy(){
+    this.$bus.$off("add")
+  }
+ 
 }
 </script>
 

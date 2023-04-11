@@ -141,7 +141,7 @@ export default new VueRouter({
                     component:UserMessage
                 },
                 {
-                    name:'个人中心',
+                    name:'管理员个人中心',
                     path:'personalcenter',
                     component:PersonalCenter
                 },
