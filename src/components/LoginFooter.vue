@@ -23,9 +23,9 @@ export default {
   name: 'LoginFooter',
   methods: {
     goUserMainInterface() {
-      this.$bus.$emit('Login')
       this.$bus.$emit('SendUserName')
       this.$store.commit('JUDGETIME', this.nowHours)
+      this.$bus.$emit('PostUserInfo')
     }
   },
   computed: {

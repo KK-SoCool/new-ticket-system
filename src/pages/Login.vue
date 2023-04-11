@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <form action="">
+    <form>
       <div class="loginTitle">欢迎来到火车售票系统</div>
       <UserInfo></UserInfo>
       <LoginFooter></LoginFooter>

@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="loginTitle">注册</div>
-    <form action="">
+    <form>
       <div class="registerInfo">
         <div class="userName">
           <i class="el-icon-s-custom"></i>
@@ -41,13 +41,20 @@
         >
       </div>
       <div class="submit">
-        <input type="submit" class="button" value="立即注册" />
+        <input
+          type="submit"
+          class="button"
+          value="立即注册"
+          @click="Register"
+        />
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'UserRegister',
   data() {
@@ -75,6 +82,41 @@ export default {
       } else {
         this.classErrObj.hideErr = false
       }
+    },
+    goLoginInterface() {
+      this.$router.push({ name: 'denglu' })
+    },
+    Register() {
+      axios
+        .post('/api/user/register', {
+          account: this.userName,
+          password: this.passWord,
+          checkPassword: this.rewritePassword
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.$message({
+              message: '注册成功',
+              type: 'success'
+            })
+            this.goLoginInterface()
+          } else if (res.data.code === 40000) {
+            this.$message({
+              message: '注册失败,用户名至少要4个字符，密码至少要8个字符',
+              type: 'warning'
+            })
+          } else if (res.data.code === 40003) {
+            this.$message({
+              message: '注册失败,用户名已存在',
+              type: 'warning'
+            })
+          } else {
+            this.$message({
+              message: '注册失败,检查账户名和密码是否规范',
+              type: 'warning'
+            })
+          }
+        })
     }
   }
 }

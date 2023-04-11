@@ -95,31 +95,35 @@ export default {
     add(passengerObj) {
       this.passengerInfo.push(passengerObj)
       console.log(this.passengerInfo)
-    },
-    deletePassenger(passengerCardNum) {
-      //弹框确认是否删除
-      this.$confirm('此操作将删除该乘车人信息, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-          //删除操作
-          this.passengerInfo = this.passengerInfo.filter((p) => {
-            return p.passengerCardNum != passengerCardNum
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
     }
+    // deletePassenger(passengerCardNum) {
+    //   //弹框确认是否删除
+    //   this.$confirm('此操作将删除该乘车人信息, 是否继续?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       this.$message({
+    //         type: 'success',
+    //         message: '删除成功!'
+    //       })
+    //       //删除操作
+    //       this.passengerInfo = this.passengerInfo.filter((p) => {
+    //         return p.passengerCardNum != passengerCardNum
+    //       })
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       })
+    //     })
+    // },
+  },
+  mounted() {
+    this.getUserID()
+    this.getPassengerIno()
   }
 }
 </script>

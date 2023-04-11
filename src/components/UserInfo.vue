@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'UserInfo',
   data() {
@@ -21,20 +22,48 @@ export default {
     }
   },
   methods: {
-    JudgePermission() {
-      if (this.userAccount == 1 && this.userPassword == 1) {
-        this.$router.replace('/managerMainInterface')
-      } else if (this.userAccount == 2 && this.userPassword == 2) {
-        this.$router.replace('/userMainInterface')
-      }
-    },
     sendUsername() {
       this.$store.commit('CHANGENAME', this.userAccount)
+    },
+    postUserInfo() {
+      axios
+        .post('/api/user/login', {
+          account: this.userAccount,
+          password: this.userPassword
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            })
+            if (res.data.data.authority === 1) {
+              this.$router.replace('/managerMainInterface')
+            } else if (res.data.data.authority === 0) {
+              this.$router.replace('/userMainInterface')
+            }
+          } else if (res.data.code === 40001) {
+            this.$message({
+              message: '登录失败，密码错误',
+              type: 'warning'
+            })
+          } else if (res.data.code === 40004) {
+            this.$message({
+              message: '登录失败，账户名不存在',
+              type: 'warning'
+            })
+          } else {
+            this.$message({
+              message: '登录失败，请检查账户和密码是否有误',
+              type: 'warning'
+            })
+          }
+        })
     }
   },
   mounted() {
-    this.$bus.$on('Login', this.JudgePermission)
     this.$bus.$on('SendUserName', this.sendUsername)
+    this.$bus.$on('PostUserInfo', this.postUserInfo)
   }
 }
 </script>

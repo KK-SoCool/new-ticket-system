@@ -111,9 +111,9 @@ export default new VueRouter({
                     component: ManagerFirstPage
                 },
                 {
-                    name:'车票信息',
-                    path:'ticketMessage',
-                    component:TicketMessage
+                    name: '车票信息',
+                    path: 'ticketMessage',
+                    component: TicketMessage
                 },
                 {
                     name: '退票信息',
@@ -121,29 +121,29 @@ export default new VueRouter({
                     component: UnTicketInfo
                 },
                 {
-                    name:'车站信息',
-                    path:'stationManagement',
-                    component:StationManagement
+                    name: '车站信息',
+                    path: 'stationManagement',
+                    component: StationManagement
                 },
                 {
-                    name:'车次管理',
-                    path:'trainmanagement',
-                    component:TrainManagement
+                    name: '车次管理',
+                    path: 'trainmanagement',
+                    component: TrainManagement
                 },
                 {
-                    name:'列车座位管理',
-                    path:'seatTypeManagement',
+                    name: '列车座位管理',
+                    path: 'seatTypeManagement',
                     component: () => import('../ManagerPages/SeatTypeManagement.vue')
                 },
                 {
-                    name:'用户信息',
-                    path:'usermessage',
-                    component:UserMessage
+                    name: '用户信息',
+                    path: 'usermessage',
+                    component: UserMessage
                 },
                 {
-                    name:'个人中心',
-                    path:'personalcenter',
-                    component:PersonalCenter
+                    name: '管理员个人中心',
+                    path: 'personalcenter',
+                    component: PersonalCenter
                 },
             ]
         }
