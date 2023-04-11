@@ -69,9 +69,6 @@ export default {
     // 保存操作
     submitForm(formName) {
       const that = this;
-      let obj = JSON.parse(JSON.stringify(that.formInfo))
-      // const params = Object.assign({}, n);
-      // console.log(params);
       that.$refs[formName].validate((valid) => {
         if (valid) {
           if(this.dialogTitle === '添加车站'){
@@ -99,14 +96,13 @@ export default {
             }).then(res=>{
               if(res.data.code ===0)
               {
-                console.log(1)
                 that.$message({
                   message: "操作成功！",
                   type: "success",
                 });
               }
             })
-            console.log(11)
+            that.closeDialog(1);
           }
         } else {
           return false;
@@ -114,7 +110,7 @@ export default {
       });
     },
     // 关闭弹框
-    closeDialog(flag,obj) {
+    closeDialog(flag) {
       this.$refs["formInfo"].resetFields();
       this.showDialog = false;
       console.log(this.dialogTitle);

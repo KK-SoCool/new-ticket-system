@@ -70,6 +70,7 @@ import axios from 'axios'
 import SeatTypeComponent from '@/ManagerComponents/SeatTypeComponent.vue'
 export default {
   name: 'SeatType',
+  inject:['reload'],
   components: { SeatTypeComponent },
   data() {
     return {
@@ -99,6 +100,7 @@ export default {
           console.log(error)
         })
     },
+
     addItem() {
       this.seatItem = {
         name: '',
@@ -107,9 +109,10 @@ export default {
       this.dialogTitle = '添加车站'
       this.showDialog = true
       this.$nextTick(() => {
-        this.$refs['SeatTypeComponent'].showDialog = true
+      this.$refs['SeatTypeComponent'].showDialog = true
       })
     },
+
     handleClick(row) {
       this.seatItem = row
       this.dialogTitle = '编辑座位'
@@ -121,7 +124,8 @@ export default {
     closeDialog(flag) {
       if (flag) {
         // 重新刷新表格内容
-        this.fetchData()
+        //this.getSeatList()
+        this.reload()
       }
       this.showDialog = false
     },
@@ -138,7 +142,7 @@ export default {
               }
             })
             .then((res) => {
-              console.log(res)
+              this.reload()
               this.$message({
                 type: 'success',
                 message: '删除成功!'
@@ -153,9 +157,6 @@ export default {
         })
     }
   },
-  beforeDestroy() {
-    this.$bus.$off('add')
-  }
 }
 </script>
 

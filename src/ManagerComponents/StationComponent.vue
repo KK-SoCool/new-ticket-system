@@ -60,9 +60,13 @@ export default {
     // 保存操作
     submitForm(formName) {
       const that = this;
-      const params = Object.assign(that.formInfo, {});
+      let obj = JSON.parse(JSON.stringify(that.formInfo))
+      // const params = Object.assign({}, n);
+      // console.log(params);
       that.$refs[formName].validate((valid) => {
         if (valid) {
+          if(this.dialogTitle === '添加车站')
+          this.$bus.$emit('add',obj)
           // 走保存请求
           that.$message({
             message: "操作成功！",
@@ -75,9 +79,10 @@ export default {
       });
     },
     // 关闭弹框
-    closeDialog(flag) {
+    closeDialog(flag,obj) {
       this.$refs["formInfo"].resetFields();
       this.showDialog = false;
+      console.log(this.dialogTitle);
       this.$emit("closeDialog", flag);
     },
   },
