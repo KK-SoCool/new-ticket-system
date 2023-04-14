@@ -2,8 +2,8 @@
   <div class="header">
     <h2>215-12306</h2>
     <h2 class="hello">
-      {{ $store.state.hello
-      }}{{ $store.state.userName }}。欢迎使用火车售票系统！
+      {{ this.$store.state.hello
+      }} {{ this.$store.state.userName }} 。欢迎使用火车售票系统！
     </h2>
     <el-avatar :size="50" :src="circleUrl" class="block"></el-avatar>
     <div class="goOut" @click="exit">退出登录</div>
@@ -16,13 +16,17 @@ export default {
   data() {
     return {
       circleUrl:
-        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      // userID:''
     }
   },
   methods: {
     exit() {
       this.$router.push({ name: 'denglu' })
-    }
+    },
+    // getUserID(){
+    //   this.userID=this.$store.state.userID
+    // }
   }
 }
 </script>

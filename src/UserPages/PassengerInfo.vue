@@ -27,32 +27,29 @@
           :size="size"
           border
           v-for="p in passengerInfo"
-          :key="p.passengerCardNum"
+          :key="p.id"
         >
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-user"></i>
               姓名
             </template>
-            {{ p.passengerName }}
+            {{ p.name }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-menu"></i>
               证件类型
             </template>
-            {{ p.passengerCardType }}
+            {{ p.type }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-postcard"></i>
               证件号
             </template>
-            {{ p.passengerCardNum }}
-            <el-button
-              type="danger"
-              plain
-              @click="deletePassenger(p.passengerCardNum)"
+            {{ p.number }}
+            <el-button type="danger" plain @click="deletePassenger(p.id)"
               >删除</el-button
             >
           </el-descriptions-item>
@@ -64,66 +61,103 @@
 
 <script>
 import AddPassengerDialog from './components/AddPassengerDialog.vue'
+import axios from 'axios'
 
 export default {
   name: 'PassengerInfo',
   components: { AddPassengerDialog },
   data() {
     return {
+      userID: null,
       size: '',
       dialogTitle: '请输入乘车人信息',
       dialogWidth: '35%',
       dialogHeight: '1000px',
-      passengerInfo: [
-        {
-          passengerName: '爱铿',
-          passengerCardType: '身份证',
-          passengerCardNum: '441283200204294970'
-        },
-        {
-          passengerName: 'ikun',
-          passengerCardType: '粉丝证',
-          passengerCardNum: '1234567891011121314'
-        }
-      ]
+      passengerInfo: []
     }
   },
   methods: {
+    judgeCardType(list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].type === 1) {
+          list[i].type = '护照'
+        } else {
+          list[i].type = '身份证'
+        }
+      }
+    },
+    getUserID() {
+      this.userID = this.$store.state.userID
+      this.userID = this.userID - 0
+    },
+    getPassengerInfo() {
+      this.getUserID()
+      // console.log(this.userID)
+      // console.log(typeof this.userID)
+      axios
+        .get('/api/passenger', {
+          params: {
+            id: this.userID
+          }
+        })
+        .then((res) => {
+          // console.log(res.data.code)
+          this.passengerInfo = res.data.data
+          this.judgeCardType(this.passengerInfo)
+          if (this.passengerInfo.length === 0) {
+            this.$message({
+              message: '查不到乘车人信息，请添加'
+            })
+          }
+        })
+    },
     addPassenger() {
       this.$bus.$emit('Show')
     },
+
+    //添加乘车人方法，push之后调用judgeCardType遍历数组改变value值
     add(passengerObj) {
       this.passengerInfo.push(passengerObj)
-      console.log(this.passengerInfo)
+      this.judgeCardType(this.passengerInfo)
+    },
+
+    //删除乘车人信息
+    deletePassenger(id) {
+      //弹框确认是否删除
+      this.$confirm('此操作将删除该乘车人信息, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        //点确定后运行
+        .then(() => {
+          console.log(id)
+          axios.delete('/api/passenger/' + id).then((res) => {
+            if (res.data.code === 0) {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '删除失败'
+              })
+            }
+          })
+        })
+
+        //点取消后运行
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
-    // deletePassenger(passengerCardNum) {
-    //   //弹框确认是否删除
-    //   this.$confirm('此操作将删除该乘车人信息, 是否继续?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   })
-    //     .then(() => {
-    //       this.$message({
-    //         type: 'success',
-    //         message: '删除成功!'
-    //       })
-    //       //删除操作
-    //       this.passengerInfo = this.passengerInfo.filter((p) => {
-    //         return p.passengerCardNum != passengerCardNum
-    //       })
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: 'info',
-    //         message: '已取消删除'
-    //       })
-    //     })
-    // },
   },
   mounted() {
-    this.getUserID()
-    this.getPassengerIno()
+    this.getPassengerInfo()
   }
 }
 </script>

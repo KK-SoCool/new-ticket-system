@@ -38,8 +38,10 @@ export default {
               type: 'success'
             })
             if (res.data.data.authority === 1) {
+              this.$store.commit('CHANGEID',res.data.data.id)
               this.$router.replace('/managerMainInterface')
             } else if (res.data.data.authority === 0) {
+              this.$store.commit('CHANGEID',res.data.data.id)
               this.$router.replace('/userMainInterface')
             }
           } else if (res.data.code === 40001) {

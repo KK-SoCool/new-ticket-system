@@ -10,30 +10,70 @@
       <el-divider></el-divider>
     </div>
     <div class="search">
-      <el-cascader
-        placeholder="起始地"
-        :options="originStationOptions"
-        v-model="originStationOptions.value"
+      <el-select
+        v-model="searchRequirement.originStationOptionsValue"
+        clearable
         filterable
-        class="el-cascader"
-      ></el-cascader>
+        class="el-select"
+        placeholder="起始车站"
+      >
+        <el-option
+          v-for="item in originStationOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       <i class="el-icon-refresh"></i>
-      <el-cascader
-        placeholder="目的地"
-        :options="finalStationOptions"
-        v-model="finalStationOptions.value"
+      <el-select
+        v-model="searchRequirement.finalStationOptionsValue"
+        clearable
         filterable
-        class="el-cascader"
-      ></el-cascader>
+        class="el-select"
+        placeholder="终点车站"
+      >
+        <el-option
+          v-for="item in finalStationOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <el-select
+        v-model="searchRequirement.trainName"
+        clearable
+        filterable
+        class="el-select type"
+        placeholder="选择动车类型"
+      >
+        <el-option
+          v-for="item in trainName"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       <el-date-picker
-        v-model="goDate"
+        v-model="searchRequirement.goDate"
         align="right"
         type="date"
-        placeholder="选择出发日期"
+        class="date"
+        placeholder="选择日期"
         :picker-options="pickerOptions"
+        value-format="yyyy-MM-dd HH:mm:ss"
       >
       </el-date-picker>
-      <el-button type="primary" icon="el-icon-search" class="searchButton"
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        class="searchButton"
+        @click.stop="
+          searchTicket()
+          openLoadingScreen()
+        "
         >搜索</el-button
       >
     </div>
@@ -46,44 +86,65 @@ import ShowTicketData from './components/ShowTicketData.vue'
 
 export default {
   name: 'TicketPurchase',
+  components: { ShowTicketData },
   data() {
     return {
       originStationOptions: [
         {
-          value: '广州',
-          label: '广州'
+          value: 4,
+          label: '广州东站'
         },
         {
-          value: '深圳',
-          label: '深圳'
+          value: 7,
+          label: '广州南站'
         },
         {
-          value: '佛山',
-          label: '佛山'
+          value: 1,
+          label: '北京西站'
         },
         {
-          value: '肇庆',
-          label: '肇庆'
+          value: 8,
+          label: '潮阳站'
         }
       ],
       finalStationOptions: [
         {
-          value: '广州',
-          label: '广州'
+          value: 4,
+          label: '广州东站'
         },
         {
-          value: '深圳',
-          label: '深圳'
+          value: 7,
+          label: '广州南站'
         },
         {
-          value: '佛山',
-          label: '佛山'
+          value: 1,
+          label: '北京东站'
         },
         {
-          value: '肇庆',
-          label: '肇庆'
+          value: 8,
+          label: '潮阳站'
         }
       ],
+      trainName: [
+        {
+          value: '高铁动车',
+          label: '高铁动车'
+        },
+        {
+          value: '火车',
+          label: '火车'
+        },
+        {
+          value: '普通动车',
+          label: '普通动车'
+        }
+      ],
+      searchRequirement: {
+        originStationOptionsValue: '',
+        finalStationOptionsValue: '',
+        goDate: '',
+        trainName: ''
+      },
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() < Date.now()
@@ -120,11 +181,47 @@ export default {
             }
           }
         ]
-      },
-      goDate: ''
+      }
     }
   },
-  components: { ShowTicketData }
+  methods: {
+    //点击搜索按钮，调用judge方法判断起始车站输入是否有误或为空,判断完后触发全局事件'Search'传参到展示数据的表格组件中，根据传过去的参数请求车票信息
+    searchTicket() {
+      if (
+        (this.searchRequirement.originStationOptionsValue === '') |
+        (this.searchRequirement.finalStationOptionsValue === '')
+      ) {
+        this.$message({
+          message: '起始车站不能为空',
+          type: 'info'
+        })
+      } else if (
+        this.searchRequirement.originStationOptionsValue ===
+        this.searchRequirement.finalStationOptionsValue
+      ) {
+        this.$message({
+          message: '起始车站不能相同',
+          type: 'info'
+        })
+      } else if (this.searchRequirement.trainName === '') {
+        this.$message({
+          message: '动车类型不能为空',
+          type: 'info'
+        })
+      } else if (this.searchRequirement.goDate === '') {
+        this.$message({
+          message: '日期不能同时为空',
+          type: 'info'
+        })
+      } else {
+        this.$bus.$emit('SearchTicket', this.searchRequirement)
+      }
+    },
+    //点击事件触发加载页面
+    openLoadingScreen() {
+      this.$bus.$emit('showLoadingScreen')
+    }
+  }
 }
 </script>
 
@@ -154,12 +251,21 @@ export default {
   height: 100px;
 }
 
-.search .el-cascader {
-  margin-left: 25px;
-  margin-right: 25px;
+.search .el-select {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .search .searchButton {
   margin: 20px;
+}
+
+.search .type {
+  width: 150px;
+  margin-left: -10px;
+}
+
+.search .date {
+  width: 150px;
 }
 </style>

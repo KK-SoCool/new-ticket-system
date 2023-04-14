@@ -8,6 +8,9 @@ const mutations = {
     CHANGENAME(state, value) {
         state.userName = value
     },
+    CHANGEID(state, value){
+        state.userID = value
+    },
     JUDGETIME(state, value) {
         if (value >= 0 && value <= 5) {
             state.hello = '夜深了注意休息。'
@@ -29,7 +32,8 @@ const mutations = {
 
 const state = {
     userName: '用户',
-    hello: '你好'
+    hello: '你好。',
+    userID: 1
 }
 
 Vue.use(Vuex)

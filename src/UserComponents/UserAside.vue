@@ -27,13 +27,6 @@
         <span slot="title">订单信息</span>
       </el-menu-item>
       <el-menu-item
-        index="/userMainInterface/personalInfo"
-        @click="goPersonalInfo"
-      >
-        <i class="el-icon-user"></i>
-        <span slot="title">个人中心</span>
-      </el-menu-item>
-      <el-menu-item
         index="/userMainInterface/passengerInfo"
         @click="goPassengerInfo"
       >
@@ -61,9 +54,6 @@ export default {
     },
     goTicketPurchase() {
       this.$router.push('/userMainInterface/ticketPurchase').catch((err) => {})
-    },
-    goPersonalInfo() {
-      this.$router.push('/userMainInterface/personalInfo').catch((err) => {})
     },
     goPassengerInfo() {
       this.$router.push('/userMainInterface/passengerInfo').catch((err) => {})
