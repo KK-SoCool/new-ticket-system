@@ -18,60 +18,68 @@
           style="width: 100%"
           stripe
         >
-          <el-table-column prop="ID" label="ID" width="50" align="center">
-          </el-table-column>
           <el-table-column
-            prop="originTime"
+            prop="ticketInfo.trainInfoDO.startTime"
             label="起始时间"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="originStation"
+            prop="ticketInfo.startStation.stationName"
             label="起始车站"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="finalTime"
+            prop="ticketInfo.trainInfoDO.endTime"
             label="到达时间"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="finalStation"
-            label="到达车站"
+            prop="ticketInfo.endStation.stationName"
+            label="终点车站"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="trainCode"
-            label="车型车次（动车代码）"
-            width="150"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="seatType"
-            label="座次"
+            prop="ticketInfo.trainTypeDO.trainCode"
+            label="动车代码"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="seatNum"
-            label="座位号"
+            prop="ticketInfo.seatTypeDO.seatName"
+            label="座位类型"
+            width="100"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="purchasePrice"
+            label="票价"
+            width="70"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="passengerDO.passengerName"
+            label="乘车人"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column label="操作" align="center">
-            <template>
-              <el-button type="text" @click="isRefund" :disabled="disabled"
+            <template v-slot="scope">
+              <el-button
+                type="text"
+                @click="isRefund(scope.row)"
+                :disabled="disabled"
                 >退票</el-button
               >
             </template>
@@ -83,38 +91,48 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'TicketInfo',
 
   data() {
     return {
-      userTicketTable: [
-        {
-          ID: 1,
-          originTime: '15:39',
-          originStation: '广州',
-          finalTime: '16:50',
-          finalStation: '深圳',
-          trainCode: 'G6804',
-          seatType: '一等座',
-          seatNum: '0812A'
-        }
-      ],
-      disabled: false
+      userTicketTable: [],
+      disabled: false,
+      reason: '无'
     }
   },
   methods: {
-    isRefund() {
+    getTicketInfo() {
+      axios.get('/api/ticketSale/getAll').then((res) => {
+        this.userTicketTable = res.data.data
+      })
+    },
+    isRefund(data) {
       this.$confirm('此操作将提交退票申请, 是否继续?', '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.disabled = true
-          this.$message({
-            type: 'success',
-            message: '已提交退票申请!'
+          const params = new URLSearchParams()
+          params.append('saleId', data.saleId)
+          params.append('reason', this.reason)
+          axios.put('/api/ticketSale', params).then((res) => {
+            console.log(res.data.code)
+            console.log(res.data.description)
+            if (res.data.code === 0) {
+              this.$message({
+                type: 'success',
+                message: '已提交退票申请!'
+              })
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '退票失败!' + res.data.description
+              })
+            }
           })
         })
         .catch(() => {
@@ -125,7 +143,9 @@ export default {
         })
     }
   },
-  mounted() {}
+  mounted() {
+    this.getTicketInfo()
+  }
 }
 </script>
 
