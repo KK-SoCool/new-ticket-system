@@ -119,7 +119,7 @@ export default {
           const params = new URLSearchParams()
           params.append('saleId', data.saleId)
           params.append('reason', this.reason)
-          axios.put('/api/ticketSale', params).then((res) => {
+          axios.post('/api/ticketSale', params).then((res) => {
             console.log(res.data.code)
             console.log(res.data.description)
             if (res.data.code === 0) {
