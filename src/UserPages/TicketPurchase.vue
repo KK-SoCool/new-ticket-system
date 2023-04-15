@@ -19,9 +19,9 @@
       >
         <el-option
           v-for="item in originStationOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
         >
         </el-option>
       </el-select>
@@ -35,9 +35,9 @@
       >
         <el-option
           v-for="item in finalStationOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
         >
         </el-option>
       </el-select>
@@ -83,48 +83,15 @@
 
 <script>
 import ShowTicketData from './components/ShowTicketData.vue'
+import axios from 'axios'
 
 export default {
   name: 'TicketPurchase',
   components: { ShowTicketData },
   data() {
     return {
-      originStationOptions: [
-        {
-          value: 4,
-          label: '广州东站'
-        },
-        {
-          value: 7,
-          label: '广州南站'
-        },
-        {
-          value: 1,
-          label: '北京西站'
-        },
-        {
-          value: 8,
-          label: '潮阳站'
-        }
-      ],
-      finalStationOptions: [
-        {
-          value: 4,
-          label: '广州东站'
-        },
-        {
-          value: 7,
-          label: '广州南站'
-        },
-        {
-          value: 1,
-          label: '北京东站'
-        },
-        {
-          value: 8,
-          label: '潮阳站'
-        }
-      ],
+      originStationOptions: [],
+      finalStationOptions: [],
       trainName: [
         {
           value: '高铁动车',
@@ -220,7 +187,18 @@ export default {
     //点击事件触发加载页面
     openLoadingScreen() {
       this.$bus.$emit('showLoadingScreen')
+    },
+    getStationInfo() {
+      axios.get('/api/station/getAll').then((res) => {
+        this.originStationOptions = res.data.data
+        this.finalStationOptions = res.data.data
+        console.log(this.originStationOptions)
+        console.log(this.finalStationOptions)
+      })
     }
+  },
+  mounted() {
+    this.getStationInfo()
   }
 }
 </script>
