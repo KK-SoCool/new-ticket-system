@@ -9,9 +9,11 @@
       </el-breadcrumb>
       <el-divider></el-divider>
     </div>
+
     <div class="showUnTicketInfo">
       <div class="container">
         <el-table
+          v-loading='loading'
           :data="UnTicket"
           height="450"
           border
@@ -19,14 +21,14 @@
           stripe
         >
           <el-table-column
-            prop="ticketID"
+            prop="ticketInfo.ticketId"
             label="车票ID"
             width="180"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="userID"
+            prop="userId"
             label="退票用户"
             width="180"
             align="center"
@@ -51,7 +53,7 @@
               <el-button @click="handleClick(scope.row)" type="text"
                 >查看</el-button
               >
-              <el-button type="text" @click="refund">退票</el-button>
+<!--              <el-button type="text" @click="refund">退票</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -66,7 +68,7 @@
         v-if="showDialog"
         ref="unTicketComponent"
         :dialog-title="dialogTitle"
-        :item-info="stationItem"
+        :item-info="unTicketItem"
         @closeDialog="closeDialog"
     ></UnTicketComponent>
   </div>
@@ -74,25 +76,38 @@
 
 <script>
 import UnTicketComponent from '../ManagerComponents/UnTicketComponent'
+import axios from 'axios'
 export default {
   name: 'UnTicketInfo',
   components:{UnTicketComponent},
   data() {
     return {
+      loading : true,
       showDialog: false,
-      UnTicket: [
-        {
-          ticketID: '12345',
-          userID: '666',
-          refundedPrice: '65',
-          refundedTime: '12:32'
-        }
-      ]
+      dialogTitle:'',
+      UnTicket: [],
+      unTicketItem:[]
     }
   },
+  mounted() {
+    this.loading = true
+    this.getUnticketInfo()
+  },
   methods: {
+    async getUnticketInfo(){
+      await axios
+        .get('/api/refunded/getAll')
+        .then(res => {
+          this.UnTicket = res.data.data
+          console.log(this.UnTicket)
+          this.loading = false
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     handleClick(row){
-      this.stationItem = row
+      this.unTicketItem = row
       this.dialogTitle = "查看车票"
       this.showDialog = true
       this.$nextTick(() => {
@@ -101,11 +116,11 @@ export default {
       },
 
     closeDialog(flag) {
-          // if (flag) {
-          //   // 重新刷新表格内容
-          //   this.fetchData();
-          // }
-          // this.showDialog = false;
+          if (flag) {
+            // 重新刷新表格内容
+            // this.fetchData();
+          }
+          this.showDialog = false;
       },
 
     refund() {

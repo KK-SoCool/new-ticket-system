@@ -10,11 +10,12 @@
       <el-divider></el-divider>
     </div>
     <el-button type="primary" @click="addItem" size="mini" class="addbutton"
-      >添加列车</el-button
-    >
+    >添加座位类型
+    </el-button>
     <div class="showUnTicketInfo">
       <div class="container">
         <el-table
+          v-loading='loading'
           :data="seatList"
           height="450"
           border
@@ -24,14 +25,14 @@
           <el-table-column
             prop="name"
             label="座位类型"
-            width="85"
+            width="160"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="description"
             label="座位描述"
-            width="85"
+            width="600"
             align="center"
           >
           </el-table-column>
@@ -55,13 +56,6 @@
         ></SeatTypeComponent>
       </div>
     </div>
-    <el-pagination
-      class="pagination"
-      small
-      layout="prev, pager, next"
-      :total="30"
-    >
-    </el-pagination>
   </div>
 </template>
 
@@ -74,6 +68,7 @@ export default {
   components: { SeatTypeComponent },
   data() {
     return {
+      loading:true,
       seatList: [],
       input: '',
       showDialog: false,
@@ -88,13 +83,15 @@ export default {
   },
   mounted() {
     this.getSeatList()
+    this.loading = true
   },
   methods: {
-    getSeatList() {
-      axios
+    async getSeatList() {
+      await axios
         .get('/api/seat/admin')
         .then((res) => {
           this.seatList = res.data.data
+          this.loading = false
         })
         .catch((error) => {
           console.log(error)
@@ -106,7 +103,7 @@ export default {
         name: '',
         description: ''
       }
-      this.dialogTitle = '添加车站'
+      this.dialogTitle = '添加座位类型'
       this.showDialog = true
       this.$nextTick(() => {
       this.$refs['SeatTypeComponent'].showDialog = true
@@ -118,7 +115,7 @@ export default {
       this.dialogTitle = '编辑座位'
       this.showDialog = true
       this.$nextTick(() => {
-        this.$refs['SeatTypeComponent'].showDialog = true
+      this.$refs['SeatTypeComponent'].showDialog = true
       })
     },
     closeDialog(flag) {
@@ -130,6 +127,7 @@ export default {
       this.showDialog = false
     },
     refund(id) {
+      console.log()
       this.$confirm('此操作不可撤销，请问是否要删除车站', '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -141,13 +139,16 @@ export default {
                 id: id
               }
             })
-            .then((res) => {
+            .then(() => {
               this.reload()
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               })
             })
+            .catch(error=> {
+            console.log(error)
+          })
         })
         .catch(() => {
           this.$message({

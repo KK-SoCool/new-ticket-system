@@ -87,7 +87,7 @@ export default {
         type: Object,
         default: function () {
             return {};
-        },
+          },
         },
     },
   data() {
@@ -96,11 +96,13 @@ export default {
       formInfo: JSON.parse(JSON.stringify(this.itemInfo)),
       }
   },
+  mounted() {
+    console.log(this.formInfo)
+  },
   methods: {
     // 保存操作
     submitForm(formName) {
       const that = this;
-      const params = Object.assign(that.formInfo, {});
       that.$refs[formName].validate((valid) => {
         if (valid) {
           // 走保存请求
