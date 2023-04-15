@@ -1,271 +1,383 @@
 <template>
-  <div class="UnTicketInfo">
-    <div class="Breadcrumb">
-      <el-breadcrumb separator="/" class="biaoqian">
+  <div class='UnTicketInfo'>
+    <div class='Breadcrumb'>
+      <el-breadcrumb separator='/' class='biaoqian'>
         <el-breadcrumb-item :to="{ path: '/managerMainInterface' }"
-          >火车售票系统</el-breadcrumb-item
+        >火车售票系统
+        </el-breadcrumb-item
         >
         <el-breadcrumb-item>列车管理</el-breadcrumb-item>
       </el-breadcrumb>
       <el-divider></el-divider>
     </div>
-    <el-button type="primary" @click="addItem" size="mini" class="addbutton">添加列车</el-button>
-    <div class="showUnTicketInfo">
-      <div class="container">
+
+    <div class='block'>
+      <div class='nav'>
+        <el-date-picker
+          v-model='dateTime'
+          type='datetime'
+          size='mini'
+          placeholder='选择日期时间'
+          value-format='yyyy-MM-dd HH:mm:ss'>
+        </el-date-picker>
+
+        <el-select v-model='trainname' placeholder='请选择列车类型' size='mini' style='margin-left: 5px'>
+          <el-option
+            v-for='item in options'
+            :key='item.value'
+            :label='item.label'
+            :value='item.value'>
+          </el-option>
+        </el-select>
+
+        <el-button type='primary'
+                   icon='el-icon-search'
+                   size='mini'
+                   style='margin-left: 5px'
+                   @click='getDate'
+        ></el-button>
+      </div>
+
+      <el-button type='primary'
+                 size='mini'
+                 class='addbutton'
+                 @click='addItem'
+      >添加车次
+      </el-button>
+
+      <el-switch
+        class='switch'
+        v-model='value1'
+        inactive-text='价格'>
+      </el-switch>
+    </div>
+
+    <div class='showUnTicketInfo'>
+      <div class='container'>
         <el-table
-          :data="TrainMsg"
-          height="450"
+          v-loading='loading'
+          :data='TrainMsg'
+          height='450'
           border
-          style="width: 100%"
+          style='width: 100%'
+          :key="toggleIndex"
           stripe
         >
           <el-table-column
-            prop="trainType"
-            label="类型"
-            width="85"
-            align="center"
-            >
-          </el-table-column>
-          <el-table-column
-            prop="idTrain"
-            label="车次"
-            width="85"
-            align="center"
+            prop='trainType.trainName'
+            label='类型'
+            width='100'
+            align='center'
           >
           </el-table-column>
           <el-table-column
-            prop="startstation"
-            label="始发站"
-            width="85"
-            align="center"
+            prop='trainType.trainCode'
+            label='车次'
+            width='85'
+            align='center'
           >
           </el-table-column>
           <el-table-column
-            prop="endstation"
-            label="终点站"
-            width="85"
-            align="center"
+            prop='startStation.stationName'
+            label='始发站'
+            width='100'
+            align='center'
           >
           </el-table-column>
           <el-table-column
-            prop="startTime"
-            label="出发时间"
-            width="100"
-            align="center"
+            prop='endStation.stationName'
+            label='终点站'
+            width='100'
+            align='center'
           >
           </el-table-column>
           <el-table-column
-            prop="endTime"
-            label="到达时间"
-            width="100"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column 
-            prop="trainSum"
-            label="车厢数"
-            width="60"
-            align="center"
-          >
-          </el-table-column>
-         <el-table-column
-            prop="firstSeatType"
-            label="一等座"
-            width="60"
-            align="center"
+            prop='startTime'
+            label='出发时间'
+            width='100'
+            align='center'
           >
           </el-table-column>
           <el-table-column
-            prop="secondSeatType"
-            label="二等座"
-            width="60"
-            align="center"
+            prop='endTime'
+            label='到达时间'
+            width='100'
+            align='center'
           >
           </el-table-column>
-          <el-table-column
-            prop="noSeatType"
-            label="无座"
-            width="60"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column label="操作" align="center">
-            <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text"
-                >修改</el-button
+            <template v-if='!value1'>
+              <el-table-column
+                prop='firstSeatNum'
+                label='一等座数量'
+                width='70'
+                align='center'
               >
-              <el-button type="text" @click="refund">删除</el-button>
+              </el-table-column>
+              <el-table-column
+                prop='secondSeatNum'
+                label='二等座数量'
+                width='70'
+                align='center'
+              >
+              </el-table-column>
+              <el-table-column
+                prop='thirdSeatNum'
+                label='三等座数量'
+                width='70'
+                align='center'
+              >
+              </el-table-column>
             </template>
-          </el-table-column>
+
+            <template v-if='value1'>
+              <el-table-column
+                prop='firstPrice'
+                label='一等座价格'
+                width='70'
+                align='center'
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop='secondPrice'
+                label='二等座价格'
+                width='70'
+                align='center'
+              >
+              </el-table-column>
+              <el-table-column
+                prop='thirdPrice'
+                label='三等座价格'
+                width='70'
+                align='center'
+              >
+              </el-table-column>
+            </template>
+
+            <el-table-column label='操作' align='center'>
+              <template slot-scope='scope'>
+                <el-button @click='handleClick(scope.row)' type='text'
+                >查看
+                </el-button>
+              </template>
+            </el-table-column>
         </el-table>
         <DialogCompenent
-            v-if="showDialog"
-            ref="dialogComponent"
-            :dialog-title="dialogTitle"
-            :item-info="trainItem"
-            @closeDialog="closeDialog"
+          v-if='showDialog'
+          ref='dialogComponent'
+          :dialog-title='dialogTitle'
+          :item-info='trainItem'
+          @closeDialog='closeDialog'
         ></DialogCompenent>
+        <TrainDialog
+          v-if='showTable'
+          ref='trainDialog'
+          :trainTableTitle='trainTableTitle'
+          :item-info='trainItem'
+          @closeDialog='closeDialog'
+        ></TrainDialog>
       </div>
     </div>
-     <el-pagination class="pagination"
-        small
-        layout="prev, pager, next"
-        :total="30">
-        </el-pagination>
   </div>
 </template>
 
 <script>
 import DialogCompenent from '../ManagerComponents/DialogCompenent.vue'
+import TrainDialog from '@/ManagerComponents/TrainDialog.vue'
+import axios from 'axios'
+
 export default {
   name: 'TrainManagement',
-  components:{DialogCompenent},
+  inject:['reload'],
+  components: { DialogCompenent,
+    TrainDialog },
   data() {
     return {
+      dateTime: '',
+      trainname: '',
+      //在价格和数量之间进行切换
+      value1: true,
+      loading: true,
       tableLoading: false,
+
       showDialog: false,
-      dialogTitle: "添加车次",
-      trainItem:{
-        trainType:'',
-          idTrain:'',
-          startstation:'',
-          endstation:'',
-          startTime:'',
-          endTime:'',
-          trainSum:'',
-          firstSeatType:'',
-          secondSeatType:'',
-          noSeatType:''
+      showTable:false,
+
+      dialogTitle: '添加车次',
+      trainTableTitle:'查看信息',
+      trainItem: {
+        trainType: '',
+        idTrain: '',
+        startstation: '',
+        endstation: '',
+        startTime: '',
+        endTime: '',
+        trainSum: '',
+        firstSeatType: '',
+        secondSeatType: '',
+        noSeatType: ''
       },
+
+      options: [
+        {
+        value: '火车',
+        label: '火车'
+      }, {
+        value: '普通动车',
+        label: '普通动车'
+      }, {
+        value: '高铁动车',
+        label: '高铁动车'
+      }],
       TrainMsg: [],
+
+      toggleIndex:0 // 设置索引默认值
     }
   },
-  mounted(){
-    this.fetchData()
+
+  mounted() {
+    this.getTrainList()
+    this.loading = true
   },
+
+  watch:{
+    value1(){
+      this.toggleIndex = Math.random();
+    }
+  },
+
   methods: {
-    fetchData(){
-      const that = this;
-      // that.tableLoading = true;
-      that.TrainMsg = [
-        {
-          trainType:'高铁',
-          idTrain:'G1',
-          startstation:'北京',
-          endstation:'上海虹桥',
-          startTime:'12：00',
-          endTime:'16：00',
-          trainSum:'16',
-          firstSeatType:'有',
-          secondSeatType:'有',
-          noSeatType:'有'
-        },
-        {
-          trainType:'高铁',
-          idTrain:'G2',
-          startstation:'北京',
-          endstation:'上海虹桥',
-          startTime:'12：00',
-          endTime:'16：00',
-          trainSum:'16',
-          firstSeatType:'有',
-          secondSeatType:'有',
-          noSeatType:'有'
-        }
-      ]
+    getTrainList() {
+      axios
+        .post('/api/train/list', {
+          page: 1,
+          mode: 2,
+          size: 10,
+          isAvailable: 1
+          // startStationId: 1,
+          // endStationId: 4,
+          // startTime: this.dateTime,
+          // page:1,
+          // mode:1,
+          // trainName: this.trainname,
+          // size:10,
+        })
+        .then(res => {
+          this.TrainMsg = res.data.data.list
+          this.loading = false
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
-    addItem(){
+
+    addItem() {
       this.trainItem = {
-          trainType:'',
-          idTrain:'',
-          startstation:'',
-          endstation:'',
-          startTime:'',
-          endTime:'',
-          trainSum:'',
-          firstSeatType:'',
-          secondSeatType:'',
-          noSeatType:''
+        trainName: '',
+        idTrain: '',
+        startstation: '',
+        endstation: '',
+        startTime: '',
+        endTime: '',
+        firstSeatSell: '',
+        secondSeatSell: '',
+        thirdSeatSell: ''
       }
-      this.dialogTitle = "添加车次"
+      this.dialogTitle = '添加车次'
       this.showDialog = true
       this.$nextTick(() => {
-        this.$refs["dialogComponent"].showDialog = true
-      });
+        this.$refs['dialogComponent'].showDialog = true
+      })
     },
-    handleClick(row){
+
+    handleClick(row) {
       this.trainItem = row
-      this.dialogTitle = "编辑车次"
-        this.showDialog = true
+      this.trainTableTitle = '查看信息'
+      this.showTable = true
       this.$nextTick(() => {
-        this.$refs["dialogComponent"].showDialog = true
-      });
+        this.$refs['trainDialog'].showTable = true
+      })
     },
-     closeDialog(flag) {
+
+    getDate() {
+      axios
+        .post('/api/train/list', {
+          startStationId: 1,
+          endStationId: 4,
+          startTime: this.dateTime,
+          page: 1,
+          mode: 1,
+          trainName: this.trainname,
+          size: 10
+        })
+        .then(res => {
+          this.TrainMsg = res.data.data.list
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      this.dateTime = ''
+      this.trainname = ''
+    },
+
+    closeDialog(flag) {
       if (flag) {
         // 重新刷新表格内容
-        this.fetchData();
+        this.reload()
       }
-      this.showDialog = false;
+      this.showTable = false
+      this.showDialog = false
     },
-    refund() {
-      this.$confirm('请确定是否删除该车次', '注意', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消该操作'
-          })
-        })
-    }
   }
 }
 </script>
 
 <style scoped>
 .UnTicketInfo {
-  float: right;
-  width: 83%;
-  height: 720px;
-  background-color: #fff;
-  border-radius: 0 0 20px 0;
+    float: right;
+    width: 83%;
+    height: 720px;
+    background-color: #fff;
+    border-radius: 0 0 20px 0;
 }
 
-.addbutton{
-  float: right;
-  margin-right: 20px;
-  margin-bottom: 10px;
+.block {
+    padding: 5px 20px 0 20px;
+}
+
+.block .nav{
+    float: left;
+}
+
+.block .switch{
+  margin-left: 20px;
+}
+
+.block .addbutton {
+    float: right;
 }
 
 .Breadcrumb {
-  width: 100%;
-  height: 50px;
+    width: 100%;
+    height: 50px;
 }
 
 .Breadcrumb .biaoqian {
-  margin-top: 25px;
-  margin-left: 35px;
-  font-size: 18px;
+    margin-top: 25px;
+    margin-left: 35px;
+    font-size: 18px;
 }
 
 .showUnTicketInfo {
-  width: 100%;
+    width: 100%;
 }
 
 .container {
-  padding: 20px;
-  border-bottom: 1px solid #ddd;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
 }
 
-.pagination{
+.pagination {
     float: right;
     margin-right: 20px;
 }

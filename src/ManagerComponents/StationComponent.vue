@@ -10,18 +10,19 @@
     >
       <el-form
         ref="formInfo"
+        :rules="rules"
         :model="formInfo"
         class="demo-form-inline"
         label-width="auto"
       >
-        <el-form-item label="车站省份" prop="stationProvince" required>
-          <el-input v-model="formInfo.stationProvince"></el-input>
+        <el-form-item label="车站省份" prop="province">
+          <el-input v-model.trim="formInfo.province"></el-input>
         </el-form-item>
-        <el-form-item label="车站城市" prop="stationCity" required>
-          <el-input v-model="formInfo.stationCity"></el-input>
+        <el-form-item label="车站城市" prop="city">
+          <el-input v-model.trim="formInfo.city"></el-input>
         </el-form-item>
-        <el-form-item label="车站站名" prop="stationName" required>
-          <el-input v-model="formInfo.stationName"></el-input>
+        <el-form-item label="车站站名" prop="name">
+          <el-input v-model.trim="formInfo.name"></el-input>
         </el-form-item>
 
         <el-form-item style="text-align: right;">
@@ -36,6 +37,8 @@
 </template>
  
 <script>
+import axios from 'axios'
+
 export default {
   name: "StationComponent",
   props: {
@@ -54,32 +57,73 @@ export default {
     return {
       showDialog: false,
       formInfo: JSON.parse(JSON.stringify(this.itemInfo)),
+      rules:{
+        city:[{
+          required: true,
+          message: '不能为空',
+          trigger: 'blur'
+        }],
+        province:[{
+          required: true,
+          message: '不能为空',
+          trigger: 'blur'
+        }],
+        name:[{
+          required: true,
+          message: '不能为空',
+          trigger: 'blur'
+        }],
+      }
       }
   },
   methods: {
     // 保存操作
     submitForm(formName) {
       const that = this;
-      let obj = JSON.parse(JSON.stringify(that.formInfo))
-      // const params = Object.assign({}, n);
-      // console.log(params);
       that.$refs[formName].validate((valid) => {
         if (valid) {
           if(this.dialogTitle === '添加车站')
-          this.$bus.$emit('add',obj)
-          // 走保存请求
-          that.$message({
-            message: "操作成功！",
-            type: "success",
-          });
-          that.closeDialog(1);
+          {
+            console.log(this.formInfo)
+            axios.post('/api/station/admin',{
+              province:this.formInfo.province,
+              city:this.formInfo.city,
+              name:this.formInfo.name
+          }).then(res=>{
+              if(res.data.code === 0)
+              {
+                that.$message({
+                  message: "操作成功！",
+                  type: "success",
+                });
+              }
+            })
+            that.closeDialog(1);
+          }
+          else{
+            axios.put('/api/station/admin',{
+              id:this.formInfo.id,
+              province:this.formInfo.province,
+              city:this.formInfo.city,
+              name:this.formInfo.name
+            })
+              .then((res) => {
+                if (res.data.code === 0){
+                  that.$message({
+                    message: "操作成功！",
+                    type: "success",
+                  });
+                }
+                that.closeDialog(1);
+              })
+          }
         } else {
           return false;
         }
       });
     },
     // 关闭弹框
-    closeDialog(flag,obj) {
+    closeDialog(flag) {
       this.$refs["formInfo"].resetFields();
       this.showDialog = false;
       console.log(this.dialogTitle);

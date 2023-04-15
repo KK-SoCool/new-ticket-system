@@ -10,11 +10,12 @@
     >
       <el-form
         ref="formInfo"
+        :rules="rules"
         :model="formInfo"
         class="demo-form-inline"
         label-width="auto"
       >
-        <el-form-item label="座位名称" prop="name" >
+        <el-form-item label="座位名称" prop="name">
           <el-input v-model="formInfo.name"></el-input>
         </el-form-item>
         <el-form-item label="座位描述" prop="description">
@@ -40,7 +41,7 @@ export default {
   props: {
     dialogTitle: {
       type: String,
-      default: "添加车站",
+      default: "添加座位类型",
     },
     itemInfo: {
       type: Object,
@@ -53,25 +54,27 @@ export default {
     return {
       showDialog: false,
       formInfo: JSON.parse(JSON.stringify(this.itemInfo)),
+      rules: {
+        name:[{
+          required: true,
+          message: '不能为空',
+          trigger: 'blur'
+        }],
+        description: [{
+          required: true,
+          message: '不能为空',
+          trigger: 'blur'
+        }],
+      }
     }
   },
   methods: {
-    init()
-    {
-      axios.post('/api/Station/GetStationList', {
-        stationProvince: '',
-        stationCity: '',
-        stationName: '',
-        pageIndex: 1,
-        pageSize: 10
-      })
-    },
     // 保存操作
     submitForm(formName) {
       const that = this;
       that.$refs[formName].validate((valid) => {
         if (valid) {
-          if(this.dialogTitle === '添加车站'){
+          if(this.dialogTitle === '添加座位类型'){
             axios.post('/api/seat/admin',{
               name: this.formInfo.name,
               description: this.formInfo.description
@@ -101,8 +104,8 @@ export default {
                   type: "success",
                 });
               }
+              that.closeDialog(1);
             })
-            that.closeDialog(1);
           }
         } else {
           return false;

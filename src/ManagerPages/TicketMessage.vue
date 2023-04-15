@@ -93,10 +93,13 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'TicketMessage',
     data(){
         return{
+          list:[],
             TicketMsg:[
                 {
                     ticketID:'001',
@@ -137,7 +140,23 @@ export default {
             ]
         }
     },
-    methods:{
+
+    mounted() {
+    this.getlist()
+    },
+
+  methods:{
+    getlist(){
+      axios.post('/api/train/list',{
+        page:1,
+        mode:2,
+        size:10,
+        isAvailable: 1
+      })
+        .then(res =>{
+          console.log(res.data.data)
+        })
+    },
       refund() {
       this.$confirm('此操作不可撤销，请问是否要执行退款的操作', '注意', {
         confirmButtonText: '确定',

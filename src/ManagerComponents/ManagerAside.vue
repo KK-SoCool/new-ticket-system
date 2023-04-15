@@ -15,20 +15,6 @@
         <span slot="title">首页</span>
       </el-menu-item>
       <el-menu-item
-        index="/managerMainInterface/ticketMessage"
-        @click="goTicketMessage"
-      >
-        <i class="el-icon-shopping-cart-2"></i>
-        <span slot="title">车票信息</span>
-      </el-menu-item>
-      <el-menu-item
-        index="/managerMainInterface/unTicketInfo"
-        @click="goUnTicketInfo"
-      >
-        <i class="el-icon-s-ticket"></i>
-        <span slot="title">退票订单</span>
-      </el-menu-item>
-      <el-menu-item
         index="/managerMainInterface/stationManagement"
         @click="goStationManagement"
       >
@@ -39,8 +25,8 @@
         index="/managerMainInterface/trainmanagement"
         @click="goTrainManagement"
       >
-        <i class="el-icon-truck"></i>
-        <span slot="title">列车管理</span>
+        <i class="el-icon-cpu"></i>
+        <span slot="title">车次管理</span>
       </el-menu-item>
       <el-menu-item
         index="/managerMainInterface/seatTypeManagement"
@@ -50,18 +36,11 @@
         <span slot="title">座位管理</span>
       </el-menu-item>
       <el-menu-item
-        index="/managerMainInterface/usermessage"
-        @click="goUserMessage"
+        index="/managerMainInterface/traintypemessage"
+        @click="goTrainTypeMessage"
       >
-        <i class="el-icon-s-custom"></i>
-        <span slot="title">用户信息管理</span>
-      </el-menu-item>
-      <el-menu-item
-        index="/managerMainInterface/personalcenter"
-        @click="goPersonalCenter"
-      >
-        <i class="el-icon-user"></i>
-        <span slot="title">个人中心</span>
+        <i class="el-icon-truck"></i>
+        <span slot="title">动车类型</span>
       </el-menu-item>
     </el-menu>
   </div>
@@ -81,14 +60,6 @@ export default {
         .push('/managerMainInterface/managerFirstPage')
         .catch((err) => {})
     },
-    goUnTicketInfo() {
-      this.$router.push('/managerMainInterface/unTicketInfo').catch((err) => {})
-    },
-    goTicketMessage() {
-      this.$router
-        .push('/managerMainInterface/ticketMessage')
-        .catch((err) => {})
-    },
     goStationManagement() {
       this.$router
         .push('/managerMainInterface/stationManagement')
@@ -99,19 +70,15 @@ export default {
         .push('/managerMainInterface/trainmanagement')
         .catch((err) => {})
     },
-    goUserMessage() {
-      this.$router.push('/managerMainInterface/usermessage').catch((err) => {})
+    goTrainTypeMessage() {
+      this.$router.push('/managerMainInterface/traintypemessage')
+        .catch((err) => {})
     },
     goSeatTypeManagement() {
       this.$router
         .push('/managerMainInterface/seatTypeManagement')
         .catch((err) => {})
     },
-    goPersonalCenter() {
-      this.$router
-        .push('/managerMainInterface/personalcenter')
-        .catch((err) => {})
-    }
   },
   mounted() {
     this.activerouter = this.$route.path
