@@ -222,6 +222,7 @@ export default {
     //data里面存着传来的车票id和购买价格
     show(data) {
       this.isShow = true
+      this.getSeat()
       this.receiveSeatTypePrice.trainId = data.trainId
       this.receiveSeatTypePrice.trainTypeId = data.trainTypeId
       this.receiveSeatTypePrice.firstPrice = data.firstPrice
@@ -256,6 +257,11 @@ export default {
       } else if (this.seatTypeValue === '没得坐') {
         this.seatTypeId = this.receiveSeatInfo.thirdSeatId
       }
+    },
+    getSeat() {
+      axios.get('/api/seat/admin').then((res) => {
+        console.log(res.data.data)
+      })
     }
   },
   mounted() {

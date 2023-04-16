@@ -19,46 +19,54 @@
           stripe
         >
           <el-table-column
-            prop="ticketInfo.trainInfoDO.startTime"
+            prop="startTime"
             label="起始时间"
             width="100"
             align="center"
+            :formatter="formatStartDate"
           >
           </el-table-column>
           <el-table-column
-            prop="ticketInfo.startStation.stationName"
+            prop="sstStationName"
             label="起始车站"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="ticketInfo.trainInfoDO.endTime"
+            prop="endTime"
             label="到达时间"
             width="100"
             align="center"
+            :formatter="formatEndDate"
           >
           </el-table-column>
           <el-table-column
-            prop="ticketInfo.endStation.stationName"
+            prop="estStationName"
             label="终点车站"
             width="100"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="ticketInfo.trainTypeDO.trainCode"
+            prop="trainCode"
             label="动车代码"
             width="100"
             align="center"
           >
           </el-table-column>
-          <el-table-column
-            prop="ticketInfo.seatTypeDO.seatName"
-            label="座位类型"
-            width="100"
-            align="center"
-          >
+          <el-table-column label="座位" width="150" align="center">
+            <template slot-scope="scope">
+              {{
+                scope.row.seatName +
+                ' ' +
+                scope.row.carNumber +
+                '车' +
+                ' ' +
+                scope.row.seatNumber +
+                '号'
+              }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="purchasePrice"
@@ -68,7 +76,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="passengerDO.passengerName"
+            prop="passengerName"
             label="乘车人"
             width="100"
             align="center"
@@ -79,9 +87,9 @@
               <el-button
                 type="text"
                 @click="isRefund(scope.row)"
-                :disabled="disabled"
-                >退票</el-button
-              >
+                :disabled="scope.row.isRefunded > 0 ? true : false"
+                v-text="scope.row.isRefunded > 0 ? '已退票' : '退票'"
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -98,18 +106,72 @@ export default {
 
   data() {
     return {
+      isResh: true,
       userTicketTable: [],
       disabled: false,
-      reason: '无'
+      reason: '无',
+      trainIds: []
     }
   },
   methods: {
-    getTicketInfo() {
-      axios.get('/api/ticketSale/getAll').then((res) => {
+    formatStartDate(row, column) {
+      // 获取单元格数据
+      let data = row[column.property]
+      if (data == null) {
+        return null
+      }
+      let dt = new Date(data)
+      return (
+        dt.getFullYear() +
+        '-' +
+        (dt.getMonth() + 1) +
+        '-' +
+        dt.getDate() +
+        ' ' +
+        dt.getHours() +
+        ':' +
+        dt.getMinutes() +
+        ':' +
+        dt.getSeconds()
+      )
+    },
+    formatEndDate(row, column) {
+      // 获取单元格数据
+      let data = row[column.property]
+      if (data == null) {
+        return null
+      }
+      let dt = new Date(data)
+      return (
+        dt.getFullYear() +
+        '-' +
+        (dt.getMonth() + 1) +
+        '-' +
+        dt.getDate() +
+        ' ' +
+        dt.getHours() +
+        ':' +
+        dt.getMinutes() +
+        ':' +
+        dt.getSeconds()
+      )
+    },
+    loadData(data) {
+      const params = new URLSearchParams()
+      params.append('ticketId', data.ticketId)
+      params.append('reason', this.reason)
+      axios.post('/api/ticketSale', params).then((res) => {
         this.userTicketTable = res.data.data
       })
     },
+    getTicketInfo() {
+      axios.get('/api/ticketSale/getUserTicket').then((res) => {
+        this.userTicketTable = res.data.data
+        console.log(this.userTicketTable)
+      })
+    },
     isRefund(data) {
+      console.log(data)
       this.$confirm('此操作将提交退票申请, 是否继续?', '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -117,7 +179,7 @@ export default {
       })
         .then(() => {
           const params = new URLSearchParams()
-          params.append('saleId', data.saleId)
+          params.append('ticketId', data.ticketId)
           params.append('reason', this.reason)
           axios.post('/api/ticketSale', params).then((res) => {
             console.log(res.data.code)
@@ -127,6 +189,7 @@ export default {
                 type: 'success',
                 message: '已提交退票申请!'
               })
+              this.loadData(data)
             } else {
               this.$message({
                 type: 'warning',
