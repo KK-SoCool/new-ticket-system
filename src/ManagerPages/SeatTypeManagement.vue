@@ -128,7 +128,7 @@ export default {
     },
     refund(id) {
       console.log()
-      this.$confirm('此操作不可撤销，请问是否要删除车站', '注意', {
+      this.$confirm('此操作不可撤销，请问是否要删除该座位类型', '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       })

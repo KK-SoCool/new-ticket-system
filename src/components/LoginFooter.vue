@@ -26,7 +26,7 @@ export default {
       this.$bus.$emit('SendUserName')
       this.$store.commit('JUDGETIME', this.nowHours)
       this.$bus.$emit('PostUserInfo')
-    }
+    },
   },
   computed: {
     nowHours() {

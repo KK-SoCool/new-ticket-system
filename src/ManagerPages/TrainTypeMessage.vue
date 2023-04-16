@@ -150,7 +150,7 @@ export default {
     },
 
     refund(id) {
-      this.$confirm('此操作不可撤销，请问是否要删除该用户', '注意', {
+      this.$confirm('此操作不可撤销，请问是否要删除该列车', '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       })

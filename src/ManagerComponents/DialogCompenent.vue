@@ -222,8 +222,8 @@ export default {
                   type: "success",
                 });
               }
+              that.closeDialog(1);
             })
-          that.closeDialog(1);
         } else {
           return false;
         }
@@ -286,7 +286,6 @@ export default {
           if (this.formInfo.trainName !== ''){
             this.unusedList = this.tunusedList.filter(unused => unused.trainName === this.formInfo.trainName)
           }
-
           this.formInfo.idTrain = ''
         })
           .catch(error => {

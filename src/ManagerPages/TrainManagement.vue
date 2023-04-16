@@ -13,15 +13,35 @@
 
     <div class='block'>
       <div class='nav'>
-        <el-date-picker
-          v-model='dateTime'
-          type='datetime'
-          size='mini'
-          placeholder='选择日期时间'
-          value-format='yyyy-MM-dd HH:mm:ss'>
-        </el-date-picker>
+<!--        <el-date-picker-->
+<!--          v-model='dateTime'-->
+<!--          type='datetime'-->
+<!--          size='mini'-->
+<!--          placeholder='选择日期时间'-->
+<!--          value-format='yyyy-MM-dd HH:mm:ss'>-->
+<!--        </el-date-picker>-->
 
-        <el-select v-model='trainname' placeholder='请选择列车类型' size='mini' style='margin-left: 5px'>
+          <el-date-picker
+            v-model="dateTime"
+            size='mini'
+            style='width: 210px'
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format='yyyy-MM-dd HH:mm:ss'>
+          </el-date-picker>
+
+        <el-select v-model='trainname' placeholder='选择类型' clearable size='mini' style='margin-left: 5px;width: 100px'>
+          <el-option
+            v-for='item in options'
+            :key='item.value'
+            :label='item.label'
+            :value='item.value'>
+          </el-option>
+        </el-select>
+
+        <el-select v-model='trainname' placeholder='车次选择' clearable size='mini' style='margin-left: 5px;width: 100px'>
           <el-option
             v-for='item in options'
             :key='item.value'
@@ -156,9 +176,13 @@
 
             <el-table-column label='操作' align='center'>
               <template slot-scope='scope'>
-                <el-button @click='handleClick(scope.row)' type='text'
-                >查看
-                </el-button>
+                <i class="el-icon-zoom-in" @click='handleClick(scope.row)'></i>
+<!--                <el-button @click='handleClick(scope.row)' type='text'-->
+<!--                >查看-->
+<!--                </el-button>-->
+
+                <i class="el-icon-delete" @click="refund(scope.row.trainId)"></i>
+<!--                <el-button class="el-icon-delete" @click="refund(scope.row.trainId)"></el-button>-->
               </template>
             </el-table-column>
         </el-table>
@@ -193,7 +217,7 @@ export default {
     TrainDialog },
   data() {
     return {
-      dateTime: '',
+      dateTime: [],
       trainname: '',
       //在价格和数量之间进行切换
       value1: true,
@@ -302,13 +326,13 @@ export default {
     getDate() {
       axios
         .post('/api/train/list', {
-          startStationId: 1,
-          endStationId: 4,
-          startTime: this.dateTime,
+          startTime: this.dateTime[0],
+          endTime: this.dateTime[1],
           page: 1,
-          mode: 1,
-          trainName: this.trainname,
-          size: 10
+          mode: 2,
+          trainName: this.trainname.trim()==='' ? null:this.trainname,
+          size: 10,
+          isAvailable: 1,
         })
         .then(res => {
           this.TrainMsg = res.data.data.list
@@ -316,8 +340,38 @@ export default {
         .catch(error => {
           console.log(error)
         })
-      this.dateTime = ''
-      this.trainname = ''
+      // this.dateTime = ''
+      // this.trainname = ''
+    },
+
+    refund(id) {
+      this.$confirm('此操作不可撤销，请问是否要删除该车次', '注意', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      })
+        .then(() => {
+          axios.delete('/api/train/admin?trainId='+id).then(res =>{
+            if (res.data.code === 0){
+              this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+              })
+              this.reload()
+            }
+            else{
+              this.$message({
+                type: 'warning',
+                message: '删除失败!'
+              })
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消该操作'
+          })
+        })
     },
 
     closeDialog(flag) {
