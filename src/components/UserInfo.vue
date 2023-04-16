@@ -1,5 +1,5 @@
 <template>
-  <div class="userInfo">
+  <div class="userInfo" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="userName">
       <i class="el-icon-user"></i>
       <input type="text" v-model="userAccount" placeholder="请输入用户名" />
@@ -18,7 +18,8 @@ export default {
   data() {
     return {
       userAccount: '',
-      userPassword: ''
+      userPassword: '',
+      fullscreenLoading: false
     }
   },
   methods: {
@@ -26,6 +27,7 @@ export default {
       this.$store.commit('CHANGENAME', this.userAccount)
     },
     postUserInfo() {
+      this.fullscreenLoading = true
       axios
         .post('/api/user/login', {
           account: this.userAccount,
@@ -38,10 +40,10 @@ export default {
               type: 'success'
             })
             if (res.data.data.authority === 1) {
-              this.$store.commit('CHANGEID',res.data.data.id)
+              this.$store.commit('CHANGEID', res.data.data.id)
               this.$router.replace('/managerMainInterface')
             } else if (res.data.data.authority === 0) {
-              this.$store.commit('CHANGEID',res.data.data.id)
+              this.$store.commit('CHANGEID', res.data.data.id)
               this.$router.replace('/userMainInterface')
             }
           } else if (res.data.code === 40001) {
@@ -60,6 +62,7 @@ export default {
               type: 'warning'
             })
           }
+          this.fullscreenLoading = false
         })
     }
   },
