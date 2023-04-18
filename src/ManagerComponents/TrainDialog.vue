@@ -28,6 +28,7 @@ import UnTicketTable from '@/ManagerComponents/UnTicketTable.vue'
 import axios from 'axios'
 export default {
   name: 'TrainDialog',
+  inject:['reload'],
   components:{TicketTable,UnTicketTable},
   props: {
     trainTableTitle: {
@@ -54,7 +55,8 @@ export default {
   methods: {
     // 关闭弹框
     closeDialog(flag) {
-      this.showTable = false;
+      // this.showTable = false;
+      this.reload()
       this.$emit("closeDialog", flag);
     },
     handleClick(tab, event) {

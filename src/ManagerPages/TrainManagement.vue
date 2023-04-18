@@ -13,14 +13,6 @@
 
     <div class='block'>
       <div class='nav'>
-<!--        <el-date-picker-->
-<!--          v-model='dateTime'-->
-<!--          type='datetime'-->
-<!--          size='mini'-->
-<!--          placeholder='选择日期时间'-->
-<!--          value-format='yyyy-MM-dd HH:mm:ss'>-->
-<!--        </el-date-picker>-->
-
           <el-date-picker
             v-model="dateTime"
             size='mini'
@@ -41,19 +33,19 @@
           </el-option>
         </el-select>
 
-        <el-select v-model='trainname' placeholder='车次选择' clearable size='mini' style='margin-left: 5px;width: 100px'>
+        <el-select v-model='traincode' placeholder='车次选择' clearable size='mini' style='margin-left: 5px;width: 100px'>
           <el-option
-            v-for='item in options'
-            :key='item.value'
-            :label='item.label'
-            :value='item.value'>
+            v-for='item in trainList'
+            :key='item.trainId'
+            :label='item.trainType.trainCode'
+            :value='item.trainType.trainCode'>
           </el-option>
         </el-select>
 
         <el-button type='primary'
                    icon='el-icon-search'
                    size='mini'
-                   style='margin-left: 5px'
+                   style='margin-left: 10px'
                    @click='getDate'
         ></el-button>
       </div>
@@ -176,11 +168,10 @@
 
             <el-table-column label='操作' align='center'>
               <template slot-scope='scope'>
-                <i class="el-icon-zoom-in" @click='handleClick(scope.row)'></i>
+                <i class="el-icon-zoom-in" @click='handleClick(scope.row)' style='margin-right: 15px'></i>
 <!--                <el-button @click='handleClick(scope.row)' type='text'-->
 <!--                >查看-->
 <!--                </el-button>-->
-
                 <i class="el-icon-delete" @click="refund(scope.row.trainId)"></i>
 <!--                <el-button class="el-icon-delete" @click="refund(scope.row.trainId)"></el-button>-->
               </template>
@@ -219,6 +210,8 @@ export default {
     return {
       dateTime: [],
       trainname: '',
+      traincode:'',
+      trainList:[],
       //在价格和数量之间进行切换
       value1: true,
       loading: true,
@@ -267,6 +260,27 @@ export default {
   watch:{
     value1(){
       this.toggleIndex = Math.random();
+    },
+    trainname(){
+      axios
+        .post('/api/train/list', {
+          page: 1,
+          mode: 2,
+          trainName: this.trainname,
+          size: 10,
+          isAvailable: 1,
+        })
+        .then(res => {
+          this.trainList = res.data.data.list
+          this.traincode = ''
+          console.log(this.trainList)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    dateTime(){
+      console.log(this.dateTime)
     }
   },
 
@@ -278,13 +292,6 @@ export default {
           mode: 2,
           size: 10,
           isAvailable: 1
-          // startStationId: 1,
-          // endStationId: 4,
-          // startTime: this.dateTime,
-          // page:1,
-          // mode:1,
-          // trainName: this.trainname,
-          // size:10,
         })
         .then(res => {
           this.TrainMsg = res.data.data.list
@@ -326,16 +333,19 @@ export default {
     getDate() {
       axios
         .post('/api/train/list', {
-          startTime: this.dateTime[0],
-          endTime: this.dateTime[1],
+          startTime: this.dateTime===null?null:this.dateTime[0],
+          endTime: this.dateTime===null?null:this.dateTime[1],
           page: 1,
           mode: 2,
           trainName: this.trainname.trim()==='' ? null:this.trainname,
+          trainCode:this.traincode.trim()===''? null:this.traincode,
           size: 10,
           isAvailable: 1,
         })
         .then(res => {
           this.TrainMsg = res.data.data.list
+          console.log(this.dateTime)
+          console.log(this.TrainMsg)
         })
         .catch(error => {
           console.log(error)
@@ -382,7 +392,7 @@ export default {
       this.showTable = false
       this.showDialog = false
     },
-  }
+  },
 }
 </script>
 

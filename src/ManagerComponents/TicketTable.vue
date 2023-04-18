@@ -56,7 +56,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="refund(scope.row.ticketId)" :disabled='scope.row.isSold!==1'>退票</el-button>
+            <el-button type="text" @click="refund(scope.row)" :disabled='scope.row.isSold!==1'>退票</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -97,7 +97,6 @@ export default {
         .then(res =>{
           this.ticketMsg = res.data.data
           this.loading = false
-          console.log(res.data.data)
         })
     },
     //将时间格式化
@@ -110,12 +109,12 @@ export default {
       let dt = new Date(data)
       return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
     },
-    refund(id){
-      console.log(id)
-      axios.put('/api/refunded/admin/'+id)
+
+    refund(list){
+      axios.put('/api/refunded/admin/'+list.ticketId)
         .then(res =>{
           if (res.data.code === 0){
-            this.reload()
+            list.isSold = 0
             this.$message({
               type: 'success',
               message: '退票成功!'
