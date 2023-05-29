@@ -51,6 +51,7 @@
 import axios from 'axios'
 
 export default {
+  inject:['reload'],
   props: {
     add: {},
     switchStyle: {
@@ -132,6 +133,7 @@ export default {
             })
           }
         })
+      this.reload()
       this.add(this.formData)
       this.formData.name = ''
       this.formData.type = ''

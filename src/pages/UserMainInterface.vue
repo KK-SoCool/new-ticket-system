@@ -18,6 +18,19 @@ export default {
     UserHeader,
     UserAside,
     UserFirstPage
+  },
+  provide(){
+    return{
+      reload:this.reload
+    }
+  },
+  methods:{
+    reload(){
+      this.isRouterAlive = false;
+      this.$nextTick(function(){
+        this.isRouterAlive = true;
+      })
+    }
   }
 }
 </script>
